@@ -4,13 +4,30 @@ import java.util.concurrent.CountDownLatch;
 
 public class Employee extends Thread {
 	
-	public int ID;
-	public int teamID;
+	/**
+	 * ID in the team.
+	 * 0 is TeamLead
+	 */
+	protected final int ID;
+	
+	/**
+	 * ID of team
+	 */
+	protected final int teamID;
+	
+	/**
+	 * Time employee starts work. 
+	 * Project Manager starts at 0
+	 */
+	protected int startTime;
+	
+	
 	protected static Random r = new Random();
 	
+	/**
+	 * CDL for starting to run.
+	 */
 	protected CountDownLatch startcdl;
-	
-	protected int startTime;
 	
 	public Employee(int id, int teamID, CountDownLatch startcdl) {
 		this.ID = id;
@@ -18,9 +35,18 @@ public class Employee extends Thread {
 		this.startcdl = startcdl;
 	}
 	
+	public int getID() {
+		return ID;
+	}
+	
+	public int getTeamID() {
+		return teamID;
+	}
+	
 	@Override
 	public void run() {
-		startDay();
+		startTime = r.nextInt(30);
+		startDay(startTime);
 		doWork(startTime + 4800); // End the day
 		System.out.println("Employee " + ID + " on team " + teamID + " ended work."); 
 	}
@@ -29,15 +55,12 @@ public class Employee extends Thread {
 	 * Start the day at a random time
 	 * Blocks until that time
 	 */
-	public synchronized void startDay() {
+	public synchronized void startDay(int startOffset) {
 		startcdl.countDown();
 		try {
 			startcdl.await();
 		} catch (InterruptedException e) {}
-		startTime = r.nextInt(30);
-		while (true) {// SimulationTime.getTime < startTime
-			yield();
-		}
+		waitFor(startOffset);
 		// TODO: System.out.println("Employee " + ID + " on team " + teamID + " started work."); 
 	}
 	
@@ -54,14 +77,26 @@ public class Employee extends Thread {
 	/**
 	 * Wait on the cdl, then wait that time. 
 	 * Used for lunch/meetings.
-	 * @param cdl
-	 * @param time
+	 * @param cdl latch to wait before meeting
+	 * @param time offset from current time to wait
 	 */
-	public synchronized void busyWait(CountDownLatch cdl, long time) {
+	public synchronized void busyWait(CountDownLatch cdl, int time) {
 		cdl.countDown();
 		try {
 			cdl.await();
-			wait(time);
+			waitFor(time);
 		} catch (InterruptedException e) {}
 	}
+	
+	/**
+	 * Waits for a certain amount of time to pass. 
+	 * @param time offset from current time to wait
+	 */
+	protected void waitFor(int time) {
+		//int initTime = SimulationTime.getTime();
+		while (true) { // SimulationTime.getTime < initTime + time
+			yield();
+		}
+	}
+	
 }

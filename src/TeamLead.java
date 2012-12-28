@@ -10,7 +10,8 @@ public class TeamLead extends Employee {
 	@Override
 	public void run() {
 		// TODO: finish
-		startDay();
+		startTime = r.nextInt(30);
+		startDay(startTime);
 		doWork(startTime + 4800); // End the day
 		System.out.println("Team Lead " + ID + " on team " + teamID + " ended work."); 
 	}
@@ -22,12 +23,12 @@ public class TeamLead extends Employee {
 	 * @param cdl
 	 * @param time
 	 */
-	public synchronized void meeting(CountDownLatch cdl, long time) {
+	public synchronized void meeting(CountDownLatch cdl, int time) {
 		// TODO: acquire ConferenceRoom
 		cdl.countDown();
 		try {
 			cdl.await();
-			wait(time);
+			waitFor(time);
 		} catch (InterruptedException e) {}
 	}
 }

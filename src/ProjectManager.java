@@ -10,25 +10,10 @@ public class ProjectManager extends Employee {
 	@Override
 	public void run() {
 		// TODO: finish
-		startDay();
+		startTime = 0;
+		startDay(startTime);
 		doWork(startTime + 4800); // End the day
 		System.out.println("Employee " + ID + " on team " + teamID + " ended work."); 
 	}
 	
-	/**
-	 * Start the day at initial start. 
-	 */
-	@Override
-	public synchronized void startDay() {
-		// TODO: finish when SimulationTime is stubbed
-		startcdl.countDown();
-		try {
-			startcdl.await();
-		} catch (InterruptedException e) {}
-		startTime = 0;
-		while (true) {// SimulationTime.getTime < 0
-			yield();
-		}
-		// TODO: System.out.println("Project Manager started work"); 
-	}
 }
