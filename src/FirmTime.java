@@ -77,11 +77,11 @@ public class FirmTime {
 	}
 
 	/**
-	 * Pretty prints the current time
+	 * Formatted string of the current time
 	 * 
-	 * @return the current time in the form HH:MM AM/PM
+	 * @return a string of the current time in the form HH:MM AM/PM
 	 */
-	public String prettyPrint() {
+	public String formatTime() {
 		long[] time = hourMinutes();
 		String timeOfDay = "AM";
 		if (time[0] < START_HOUR) {
