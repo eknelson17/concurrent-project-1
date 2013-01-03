@@ -68,14 +68,30 @@ public class FirmTime {
 	 * @return a long array where the first value is hours and second value is
 	 *         minutes
 	 */
-	public long[] hourMinutes(long timeElapsed) {
-		long hour = (START_HOUR + timeElapsed / 60) % 12;
-		long minutes = timeElapsed % 60;
-		if(minutes == 0){
-			minutes = 12;
-		}
+	private long[] hourMinutes() {
+		long curTimeElapsed = timeElapsed;
+		long hour = (START_HOUR + curTimeElapsed / 60) % 12;
+		long minutes = curTimeElapsed % 60;
 		long[] time = { hour, minutes };
 		return time;
+	}
+
+	/**
+	 * Pretty prints the current time
+	 * 
+	 * @return the current time in the form HH:MM AM/PM
+	 */
+	public String prettyPrint() {
+		long[] time = hourMinutes();
+		String timeOfDay = "AM";
+		if (time[0] < START_HOUR) {
+			timeOfDay = "PM";
+		}
+		if (time[0] == 0) {
+			time[0] = 12;
+		}
+
+		return String.format("%d:%02d %s", time[0], time[1], timeOfDay);
 	}
 
 }
