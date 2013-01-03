@@ -9,11 +9,6 @@ public class FirmTime {
 	private static final int START_HOUR = 8;
 
 	/**
-	 * The minutes of the beginning of day
-	 */
-	private static final int START_MINUTES = 0;
-
-	/**
 	 * The number of minutes that would equate to end of day
 	 */
 	private static final int END_OF_DAY = 540;
@@ -26,7 +21,7 @@ public class FirmTime {
 	/**
 	 * Time in minutes elapsed since the program started.
 	 */
-	private int timeElapsed;
+	private long timeElapsed;
 
 	/**
 	 * Starts the Timer. Schedules a task to increment time elapsed every 10 ms
@@ -63,8 +58,24 @@ public class FirmTime {
 	 * 
 	 * @return time elapsed since beginning of day in minutes
 	 */
-	public int getTimeElapsed() {
+	public long getTimeElapsed() {
 		return timeElapsed;
+	}
+
+	/**
+	 * Converts the long of minutes into an hour minutes representation
+	 * 
+	 * @return a long array where the first value is hours and second value is
+	 *         minutes
+	 */
+	public long[] hourMinutes(long timeElapsed) {
+		long hour = (START_HOUR + timeElapsed / 60) % 12;
+		long minutes = timeElapsed % 60;
+		if(minutes == 0){
+			minutes = 12;
+		}
+		long[] time = { hour, minutes };
+		return time;
 	}
 
 }
