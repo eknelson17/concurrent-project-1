@@ -16,4 +16,11 @@ public class ProjectManager extends Employee {
 		System.out.println("Employee " + ID + " on team " + teamID + " ended work."); 
 	}
 	
+	public synchronized void answerQuestion() {
+		try {
+			sleep(100);
+		} catch (InterruptedException e) {
+		}
+	}
+	
 }

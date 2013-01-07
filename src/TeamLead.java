@@ -31,4 +31,12 @@ public class TeamLead extends Employee {
 			waitFor(time);
 		} catch (InterruptedException e) {}
 	}
+	
+	public synchronized void answerQuestion() {
+		if (r.nextDouble() < 0.5) {	// Can answer
+			return;
+		} else {
+			//TODO: Firm.getProjectManager().answerQuestion();
+		}
+	}
 }

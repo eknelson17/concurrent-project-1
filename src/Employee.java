@@ -69,8 +69,16 @@ public class Employee extends Thread {
 	 * @param nextScheduledEvent time of the next thing to do
 	 */
 	public void doWork(int nextScheduledEvent) {
+		//TODO: finish and print statements
 		while (true) { // SimulationTime.getTime < nextScheduledEvent
-			// TODO: ask question
+			if (hasQuestion(0.025)) {
+				askQuestion();
+			} else {
+				try {
+					sleep(10);
+				} catch (InterruptedException e) {
+				}
+			}
 		}
 	}
 	
@@ -93,10 +101,24 @@ public class Employee extends Thread {
 	 * @param time offset from current time to wait
 	 */
 	protected void waitFor(int time) {
+		//TODO: This
 		//int initTime = SimulationTime.getTime();
 		while (true) { // SimulationTime.getTime < initTime + time
 			yield();
 		}
+	}
+	
+	protected void askQuestion() {
+		//TODO: Firm.getTeamLead(TeamID).answerQuestion();
+	}
+	
+	/**
+	 * Finds out if the employee has a question to ask
+	 * @param chance (0.0-1.0) percent chance of question
+	 * @return
+	 */
+	protected boolean hasQuestion(double chance) {
+		return (r.nextDouble() < chance);		
 	}
 	
 }
