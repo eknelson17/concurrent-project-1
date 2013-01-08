@@ -88,9 +88,7 @@ public class Firm {
 	 * Returns the leader of a passed Employee's team
 	 * @param the employee whose leader you want to find
 	 */
-	public static Employee getEmployeesLead(Employee e){
-		int teamID = e.getTeamID() ;
-		
+	public static Employee getLead(int teamID){	
 		Employee lead = teams[teamID][0] ;
 		
 		return lead ;
