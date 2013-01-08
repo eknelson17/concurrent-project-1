@@ -4,6 +4,8 @@ import java.util.concurrent.CountDownLatch;
 
 public class Employee extends Thread {
 	
+	protected final double chance = 0.005;
+	
 	/**
 	 * ID in the team.
 	 * 0 is TeamLead
@@ -44,11 +46,12 @@ public class Employee extends Thread {
 	}
 	
 	@Override
-	public void run() {
+	public void run() {	
+		//TODO: Finish run
 		startTime = r.nextInt(30);
 		startDay(startTime);
 		doWork(startTime + 4800); // End the day
-		System.out.println("Employee " + ID + " on team " + teamID + " ended work."); 
+		System.out.println("Employee " + ID + " on team " + teamID + " ended work at " + Firm.getFirmTime().formatTime()); 
 	}
 	
 	/**
@@ -61,7 +64,7 @@ public class Employee extends Thread {
 			startcdl.await();
 		} catch (InterruptedException e) {}
 		waitFor(startOffset);
-		// TODO: System.out.println("Employee " + ID + " on team " + teamID + " started work."); 
+		System.out.println("Employee " + ID + " on team " + teamID + " started work at " + Firm.getFirmTime().formatTime());
 	}
 	
 	/**
@@ -69,9 +72,9 @@ public class Employee extends Thread {
 	 * @param nextScheduledEvent time of the next thing to do
 	 */
 	public void doWork(int nextScheduledEvent) {
-		//TODO: finish and print statements
-		while (true) { // SimulationTime.getTime < nextScheduledEvent
-			if (hasQuestion(0.025)) {
+		while (Firm.getFirmTime().getTimeElapsed() < nextScheduledEvent) {
+			if (hasQuestion(chance)) {
+				System.out.println("Employee " + ID + " on team " + teamID + " would like to ask a question at " + Firm.getFirmTime().formatTime());
 				askQuestion();
 			} else {
 				try {
@@ -101,9 +104,8 @@ public class Employee extends Thread {
 	 * @param time offset from current time to wait
 	 */
 	protected void waitFor(int time) {
-		//TODO: This
-		//int initTime = SimulationTime.getTime();
-		while (true) { // SimulationTime.getTime < initTime + time
+		long initTime = Firm.getFirmTime().getTimeElapsed();
+		while (Firm.getFirmTime().getTimeElapsed() < initTime + time) {
 			yield();
 		}
 	}
@@ -117,8 +119,8 @@ public class Employee extends Thread {
 	 * @param chance (0.0-1.0) percent chance of question
 	 * @return
 	 */
-	protected boolean hasQuestion(double chance) {
-		return (r.nextDouble() < chance);		
+	protected boolean hasQuestion(double c) {
+		return (r.nextDouble() < c);		
 	}
 	
 }

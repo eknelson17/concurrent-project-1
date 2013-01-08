@@ -11,9 +11,9 @@ public class ProjectManager extends Employee {
 	public void run() {
 		// TODO: finish
 		startTime = 0;
-		startDay(startTime);
+		startDayManager();
 		doWork(startTime + 4800); // End the day
-		System.out.println("Employee " + ID + " on team " + teamID + " ended work."); 
+		System.out.println("Project Manager ended work at " + Firm.getFirmTime().formatTime()); 
 	}
 	
 	public synchronized void answerQuestion() {
@@ -21,6 +21,17 @@ public class ProjectManager extends Employee {
 			sleep(100);
 		} catch (InterruptedException e) {
 		}
+	}
+	
+	/**
+	 * Start the day
+	 */
+	private synchronized void startDayManager() {
+		startcdl.countDown();
+		try {
+			startcdl.await();
+		} catch (InterruptedException e) {}
+		System.out.println("Project Manager started work at " + Firm.getFirmTime().formatTime());
 	}
 	
 }

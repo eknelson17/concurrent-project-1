@@ -13,7 +13,7 @@ public class TeamLead extends Employee {
 		startTime = r.nextInt(30);
 		startDay(startTime);
 		doWork(startTime + 4800); // End the day
-		System.out.println("Team Lead " + ID + " on team " + teamID + " ended work."); 
+		System.out.println("Team Lead " + ID + " on team " + teamID + " ended work at " + Firm.getFirmTime().formatTime()); 
 	}
 	
 
@@ -33,10 +33,10 @@ public class TeamLead extends Employee {
 	}
 	
 	public synchronized void answerQuestion() {
-		if (r.nextDouble() < 0.5) {	// Can answer
+		if ((r.nextDouble() < 0.5) && Thread.currentThread() != this) { // can answer
 			return;
 		} else {
-			//TODO: Firm.getProjectManager().answerQuestion();
+			Firm.getProjectManager().answerQuestion();
 		}
 	}
 }

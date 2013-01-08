@@ -120,5 +120,14 @@ public class Firm {
 	
 	public static void main(String[] args){
 		Firm.getFirmTime().start();
+		
+		pm.start();
+		// Start threads here?
+		
+		while(!(Firm.getFirmTime().isEndOfDay())) {
+			Thread.yield();
+		}
+		Firm.getFirmTime().cancel();
+		System.exit(0);
 	}
 }
