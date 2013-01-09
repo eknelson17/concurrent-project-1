@@ -4,7 +4,7 @@ import java.util.concurrent.CountDownLatch;
 
 public class Employee extends Thread {
 	
-	protected final double chance = 0.0025;
+	protected final double chance = 0.005;
 	
 	/**
 	 * ID in the team.
@@ -50,8 +50,8 @@ public class Employee extends Thread {
 		//TODO: Finish run
 		startTime = r.nextInt(30);
 		startDay(startTime);
-		doWork(startTime + 480); // End the day
-		say("ended work");
+		doWork(startTime + 4800); // End the day
+		System.out.println("Employee " + ID + " on team " + teamID + " ended work at " + Firm.getFirmTime().formatTime()); 
 	}
 	
 	/**
@@ -64,8 +64,7 @@ public class Employee extends Thread {
 			startcdl.await();
 		} catch (InterruptedException e) {}
 		waitFor(startOffset);
-		say("started work");
-		Thread.yield();
+		System.out.println("Employee " + ID + " on team " + teamID + " started work at " + Firm.getFirmTime().formatTime());
 	}
 	
 	/**
@@ -75,7 +74,7 @@ public class Employee extends Thread {
 	public void doWork(int nextScheduledEvent) {
 		while (Firm.getFirmTime().getTimeElapsed() < nextScheduledEvent) {
 			if (hasQuestion(chance)) {
-				say("would like to ask a question");
+				System.out.println("Employee " + ID + " on team " + teamID + " would like to ask a question at " + Firm.getFirmTime().formatTime());
 				askQuestion();
 			} else {
 				try {
@@ -92,7 +91,7 @@ public class Employee extends Thread {
 	 * @param cdl latch to wait before meeting
 	 * @param time offset from current time to wait
 	 */
-	public void busyWait(CountDownLatch cdl, int time) {
+	public synchronized void busyWait(CountDownLatch cdl, int time) {
 		cdl.countDown();
 		try {
 			cdl.await();
@@ -112,7 +111,7 @@ public class Employee extends Thread {
 	}
 	
 	protected void askQuestion() {
-		Firm.getLead(teamID).answerQuestion();
+		//TODO: Firm.getTeamLead(TeamID).answerQuestion();
 	}
 	
 	/**
@@ -122,15 +121,6 @@ public class Employee extends Thread {
 	 */
 	protected boolean hasQuestion(double c) {
 		return (r.nextDouble() < c);		
-	}
-	
-	
-	protected void say(String s) {
-		if (ID != 0) {
-			System.out.println("Employee " + ID + " on team " + teamID + " " + s + " " + Firm.getFirmTime().formatTime());
-		} else {
-			System.out.println("Team Lead for team " + teamID + " " + s + " " + Firm.getFirmTime().formatTime());
-		}
 	}
 	
 }
