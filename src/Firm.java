@@ -86,10 +86,10 @@ public class Firm {
 	
 	/**
 	 * Returns the leader of a passed Employee's team
-	 * @param the employee whose leader you want to find
+	 * @param the Team Lead whose leader you want to find
 	 */
-	public static Employee getLead(int teamID){	
-		Employee lead = teams[teamID][0] ;
+	public static TeamLead getLead(int teamID){	
+		TeamLead lead = (TeamLead) teams[teamID][0] ;
 		
 		return lead ;
 	}
@@ -124,9 +124,19 @@ public class Firm {
 		pm.start();
 		// Start threads here?
 		
-		while(!(Firm.getFirmTime().isEndOfDay())) {
-			Thread.yield();
+		for(int i = 0 ; i <  NUMBER_OF_TEAMS ; i++){
+			for(int j = 0 ; j < MEMBERS_PER_TEAM ; j++){
+				try {
+					teams[i][j].join();
+				} catch (InterruptedException e) {
+				}
+			}
 		}
+		try {
+			pm.join();
+		} catch (InterruptedException e) {
+		}
+		
 		Firm.getFirmTime().cancel();
 		System.exit(0);
 	}

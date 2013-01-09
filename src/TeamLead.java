@@ -12,8 +12,8 @@ public class TeamLead extends Employee {
 		// TODO: finish
 		startTime = r.nextInt(30);
 		startDay(startTime);
-		doWork(startTime + 4800); // End the day
-		System.out.println("Team Lead " + ID + " on team " + teamID + " ended work at " + Firm.getFirmTime().formatTime()); 
+		doWork(startTime + 480); // End the day
+		say("ended work");
 	}
 	
 
@@ -34,8 +34,14 @@ public class TeamLead extends Employee {
 	
 	public synchronized void answerQuestion() {
 		if ((r.nextDouble() < 0.5) && Thread.currentThread() != this) { // can answer
+			System.out.println("\tTeam Lead for team " + teamID + " answered a question for Employee " + ((Employee) Thread.currentThread()).getId() +" at " + Firm.getFirmTime().formatTime());
 			return;
 		} else {
+			if (Thread.currentThread() != this) {
+				System.out.println("\tTeam Lead for team " + teamID + " and Employee " + ((Employee) Thread.currentThread()).getId() +" head to the PM's office at " + Firm.getFirmTime().formatTime());
+			} else {
+				System.out.println("\tTeam Lead for team " + teamID + " heads to the PM's office at " + Firm.getFirmTime().formatTime());
+			}
 			Firm.getProjectManager().answerQuestion();
 		}
 	}
