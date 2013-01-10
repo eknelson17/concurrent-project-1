@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
@@ -8,15 +6,18 @@ public class Firm {
 	/**
 	 * System constants
 	 */
-	private static final int NUMBER_OF_EMPLOYEES = 13; //3 teams + ProjectManager
-	private static final int NUMBER_OF_TEAMS = 3 ;
-	private static final int MEMBERS_PER_TEAM = 4 ;
+	public static final int NUMBER_OF_EMPLOYEES = 13; //3 teams + ProjectManager
+	public static final int NUMBER_OF_TEAMS = 3 ;
+	public static final int MEMBERS_PER_TEAM = 4 ;
 	
 	/**
 	 * This latch will be passed to each Employee (And the ProjectManager) in order to 
 	 * start all Employee threads at the same time
 	 */
 	private static final CountDownLatch cd = new CountDownLatch(NUMBER_OF_EMPLOYEES) ;
+	
+	private static final CountDownLatch firstMeeting = new CountDownLatch(NUMBER_OF_TEAMS + 1) ;
+	private static final CountDownLatch lastMeeting = new CountDownLatch(NUMBER_OF_EMPLOYEES) ;
 	
 	/**
 	 * Conference room that Team leads must obtain a lock on before hosting meeting
@@ -26,7 +27,7 @@ public class Firm {
 	/**
 	 * The ProjectManager
 	 */
-	private final static ProjectManager pm = new ProjectManager(cd) ;
+	private final static ProjectManager pm = new ProjectManager(cd, lastMeeting, firstMeeting) ;
 	
 	/**
 	 * A random Random class constant. 
@@ -57,13 +58,13 @@ public class Firm {
 			for(int j = 0 ; j < membersPerTeam ; j++){
 				//The first member of a team will always be the team lead
 				if( j==0 ){
-					TeamLead tL = new TeamLead(j, i, cd) ;
+					TeamLead tL = new TeamLead(j, i, cd, lastMeeting, firstMeeting) ;
 					teams[i][j] = tL;
 					tL.start() ;
 				}
 				//Everyone else is a regular employee
 				else{
-					Employee e = new Employee(j, i, cd) ;
+					Employee e = new Employee(j, i, cd, lastMeeting) ;
 					teams[i][j] = e;
 					e.start() ;
 				}
@@ -73,7 +74,7 @@ public class Firm {
 	}
 	
 	public static Employee[][] getAllEmployees(int id){
-		return teams ;	
+		return teams ; 
 	}
 	
 	/**
@@ -86,10 +87,10 @@ public class Firm {
 	
 	/**
 	 * Returns the leader of a passed Employee's team
-	 * @param the employee whose leader you want to find
+	 * @param the Team Lead whose leader you want to find
 	 */
-	public static Employee getLead(int teamID){	
-		Employee lead = teams[teamID][0] ;
+	public static TeamLead getLead(int teamID){	
+		TeamLead lead = (TeamLead) teams[teamID][0] ;
 		
 		return lead ;
 	}
@@ -124,9 +125,19 @@ public class Firm {
 		pm.start();
 		// Start threads here?
 		
-		while(!(Firm.getFirmTime().isEndOfDay())) {
-			Thread.yield();
+		for(int i = 0 ; i <  NUMBER_OF_TEAMS ; i++){
+			for(int j = 0 ; j < MEMBERS_PER_TEAM ; j++){
+				try {
+					teams[i][j].join();
+				} catch (InterruptedException e) {
+				}
+			}
 		}
+		try {
+			pm.join();
+		} catch (InterruptedException e) {
+		}
+		
 		Firm.getFirmTime().cancel();
 		System.exit(0);
 	}
