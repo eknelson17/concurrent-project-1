@@ -123,7 +123,6 @@ public class Firm {
 		Firm.getFirmTime().start();
 		
 		pm.start();
-		// Start threads here?
 		
 		for(int i = 0 ; i <  NUMBER_OF_TEAMS ; i++){
 			for(int j = 0 ; j < MEMBERS_PER_TEAM ; j++){
@@ -139,6 +138,6 @@ public class Firm {
 		}
 		
 		Firm.getFirmTime().cancel();
-		System.exit(0);
+		return;
 	}
 }
