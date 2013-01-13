@@ -11,10 +11,10 @@ public class Firm {
 	public static final int MEMBERS_PER_TEAM = 4 ;
 	
 	/**
-	 * This latch will be passed to each Employee (And the ProjectManager) in order to 
-	 * start all Employee threads at the same time
+	 * This latch will be passed to each Employee (And the ProjectManager) and the Timer in order to 
+	 * start all Employee threads and the Timer thread at the same time
 	 */
-	private static final CountDownLatch cd = new CountDownLatch(NUMBER_OF_EMPLOYEES) ;
+	private static final CountDownLatch cd = new CountDownLatch(NUMBER_OF_EMPLOYEES+1) ;
 	
 	private static final CountDownLatch firstMeeting = new CountDownLatch(NUMBER_OF_TEAMS + 1) ;
 	private static final CountDownLatch lastMeeting = new CountDownLatch(NUMBER_OF_EMPLOYEES) ;
@@ -43,7 +43,7 @@ public class Firm {
 	/**
 	 * The timer that each thread will use to keep track of time
 	 */
-	private final static FirmTime timer = new FirmTime();
+	private final static FirmTime timer = new FirmTime(cd);
 	
 	/**
 	 * initializes a 2D array of Employees. Also starts each thread as it's created
@@ -120,9 +120,8 @@ public class Firm {
 	}
 	
 	public static void main(String[] args){
-		Firm.getFirmTime().start();
-		
 		pm.start();
+		timer.start();
 		
 		for(int i = 0 ; i <  NUMBER_OF_TEAMS ; i++){
 			for(int j = 0 ; j < MEMBERS_PER_TEAM ; j++){

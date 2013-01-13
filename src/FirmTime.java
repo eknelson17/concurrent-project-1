@@ -1,5 +1,6 @@
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.CountDownLatch;
 
 public class FirmTime {
 	
@@ -14,6 +15,11 @@ public class FirmTime {
 	private static final int END_OF_DAY = 540;
 
 	/**
+	 * CDL for starting to run. Ensures FirmTime starts at same time as employees
+	 */
+	private final CountDownLatch startcdl;
+	
+	/**
 	 * The timer
 	 */
 	private final Timer timer = new Timer();
@@ -24,11 +30,25 @@ public class FirmTime {
 	private long timeElapsed;
 
 	/**
+	 * @param cd CountDownLatch that is passed to each employee
+	 */
+	public FirmTime(CountDownLatch cd){
+		startcdl = cd ; 
+	}
+	
+	/**
 	 * Starts the Timer. Schedules a task to increment time elapsed every 10 ms
 	 */
 	public void start() {
+		
 		TimerTask task = new TimerTask() {
 			public void run() {
+				
+				startcdl.countDown();
+				try {
+					startcdl.await();
+				} catch (InterruptedException e) {}
+				
 				timeElapsed += 1;
 			}
 		};
