@@ -27,7 +27,7 @@ public class FirmTime {
 	/**
 	 * Time in minutes elapsed since the program started.
 	 */
-	private volatile long timeElapsed;
+	private long timeElapsed;
 
 	/**
 	 * @param cd CountDownLatch that is passed to each employee
