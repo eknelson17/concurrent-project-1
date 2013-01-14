@@ -30,8 +30,8 @@ public class TeamLead extends Employee {
 	 * @param firstMeeting latch for the project manager's meeting
 	 */
 	public TeamLead(int id, int teamID, CountDownLatch startcdl, 
-			CountDownLatch lastMeeting, CountDownLatch firstMeeting) {
-		super(id, teamID, startcdl, lastMeeting);
+			CountDownLatch lastMeeting, CountDownLatch lastMeetingOver, CountDownLatch firstMeeting) {
+		super(id, teamID, startcdl, lastMeeting, lastMeetingOver);
 		morningMeeting = firstMeeting;
 		teamMeeting = new CountDownLatch(Firm.MEMBERS_PER_TEAM);
 	}
@@ -70,7 +70,7 @@ public class TeamLead extends Employee {
 		// Start and wait at the team-specific meeting for 15 minutes 
 		// using the team meeting latch, after getting the conference room
 		meeting(teamMeeting, 15, "started the team meeting for team " + 
-				teamID, "finished the team meeting for team " + (teamID + 1));
+				(teamID + 1), "finished the team meeting for team " + (teamID + 1));
 		
 		// Work until lunch
 		doWork(lunchTime, true);

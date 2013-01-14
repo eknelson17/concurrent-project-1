@@ -14,6 +14,7 @@ public class Employee extends Thread {
 	 * Chance of an employee asking a question during work. 
 	 * (0.0-1.0)
 	 * Is incredibly low as this is checked every simulation minute of work
+	 * Recommend level is between 0.00125 and 0.005
 	 */
 	protected final double chance = 0.0025;
 	
@@ -54,6 +55,11 @@ public class Employee extends Thread {
 	 * CDL for the afternoon meeting
 	 */
 	protected final CountDownLatch afternoonMeeting;
+
+	/**
+	 * CDL for when the meeting is over
+	 */
+	protected final CountDownLatch afternoonMeetingOver;
 	
 	/**
 	 * Makes a new employee and sets all given fields. 
@@ -63,11 +69,12 @@ public class Employee extends Thread {
 	 * @param lastMeeting latch for the end of day meeting
 	 */
 	public Employee(int id, int teamID, CountDownLatch startcdl, 
-			CountDownLatch lastMeeting) {
+			CountDownLatch lastMeeting, CountDownLatch lastMeetingOver) {
 		this.ID = id;
 		this.teamID = teamID;
 		this.startcdl = startcdl;
 		this.afternoonMeeting = lastMeeting;
+		this.afternoonMeetingOver = lastMeetingOver;
 	}
 	
 	/**
@@ -248,13 +255,19 @@ public class Employee extends Thread {
 	/**
 	 * Waits on the afternoon meeting cdl, then sleeps for the meeting
 	 */
-	protected synchronized void finalMeeting() {
+	protected void finalMeeting() {
 		afternoonMeeting.countDown();
 		try {
 			afternoonMeeting.await();
 			sleep(150);
 		} catch (InterruptedException e) {
 		}
+
+		afternoonMeetingOver.countDown();
+		try {
+			afternoonMeetingOver.await();
+
+		} catch (InterruptedException e) {}
 	}
 	
 }

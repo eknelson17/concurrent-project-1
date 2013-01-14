@@ -18,6 +18,7 @@ public class Firm {
 	
 	private static final CountDownLatch firstMeeting = new CountDownLatch(NUMBER_OF_TEAMS + 1) ;
 	private static final CountDownLatch lastMeeting = new CountDownLatch(NUMBER_OF_EMPLOYEES) ;
+	private static final CountDownLatch lastMeetingOver = new CountDownLatch(NUMBER_OF_EMPLOYEES) ;
 	
 	/**
 	 * Conference room that Team leads must obtain a lock on before hosting meeting
@@ -27,7 +28,7 @@ public class Firm {
 	/**
 	 * The ProjectManager
 	 */
-	private final static ProjectManager pm = new ProjectManager(cd, lastMeeting, firstMeeting) ;
+	private final static ProjectManager pm = new ProjectManager(cd, lastMeeting, lastMeetingOver, firstMeeting) ;
 	
 	/**
 	 * A random Random class constant. 
@@ -58,13 +59,13 @@ public class Firm {
 			for(int j = 0 ; j < membersPerTeam ; j++){
 				//The first member of a team will always be the team lead
 				if( j==0 ){
-					TeamLead tL = new TeamLead(j, i, cd, lastMeeting, firstMeeting) ;
+					TeamLead tL = new TeamLead(j, i, cd, lastMeeting, lastMeetingOver, firstMeeting) ;
 					teams[i][j] = tL;
 					tL.start() ;
 				}
 				//Everyone else is a regular employee
 				else{
-					Employee e = new Employee(j, i, cd, lastMeeting) ;
+					Employee e = new Employee(j, i, cd, lastMeeting, lastMeetingOver) ;
 					teams[i][j] = e;
 					e.start() ;
 				}

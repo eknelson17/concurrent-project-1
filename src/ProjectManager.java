@@ -21,9 +21,9 @@ public class ProjectManager extends Employee {
 	 * @param lastMeeting latch for the end of day meeting
 	 * @param firstMeeting latch for the project manager's meeting
 	 */
-	public ProjectManager(CountDownLatch startcdl, CountDownLatch lastMeeting, 
+	public ProjectManager(CountDownLatch startcdl, CountDownLatch lastMeeting, CountDownLatch lastMeetingOver,
 			CountDownLatch firstMeeting) {
-		super(-1, -1, startcdl, lastMeeting);
+		super(-1, -1, startcdl, lastMeeting, lastMeetingOver);
 		morningMeeting = firstMeeting;
 	}
 	
@@ -111,7 +111,7 @@ public class ProjectManager extends Employee {
 	 * Acquires the conference room for the meeting first
 	 */
 	@Override
-	protected synchronized void finalMeeting() {
+	protected void finalMeeting() {
 		synchronized(Firm.getConferenceRoom()) {
 			afternoonMeeting.countDown();
 			try {
@@ -123,6 +123,13 @@ public class ProjectManager extends Employee {
 			} catch (InterruptedException e) {
 			}
 		}
+
+		afternoonMeetingOver.countDown();
+		try {
+			afternoonMeetingOver.await();
+
+		} catch (InterruptedException e) {}
+
 	}
 	
 }
