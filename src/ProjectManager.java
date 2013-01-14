@@ -73,7 +73,7 @@ public class ProjectManager extends Employee {
 		finalMeeting();
 		
 		// Work until the end of the day
-		doWork(540, false);
+		doWork(539, false);
 		
 		// Quit working and go home
 		say("ended work");

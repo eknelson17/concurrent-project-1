@@ -27,7 +27,7 @@ public class FirmTime {
 	/**
 	 * Time in minutes elapsed since the program started.
 	 */
-	private long timeElapsed;
+	private volatile long timeElapsed;
 
 	/**
 	 * @param cd CountDownLatch that is passed to each employee
@@ -43,15 +43,15 @@ public class FirmTime {
 		
 		TimerTask task = new TimerTask() {
 			public void run() {
-				
-				startcdl.countDown();
-				try {
-					startcdl.await();
-				} catch (InterruptedException e) {}
-				
 				timeElapsed += 1;
 			}
 		};
+
+		startcdl.countDown();
+		try {
+			startcdl.await();
+		} catch (InterruptedException e) {}
+				
 		timer.schedule(task, 0, 10);
 	}
 
