@@ -70,7 +70,7 @@ public class TeamLead extends Employee {
 		// Start and wait at the team-specific meeting for 15 minutes 
 		// using the team meeting latch, after getting the conference room
 		meeting(teamMeeting, 15, "started the team meeting for team " + 
-				teamID, "finished the team meeting for team " + teamID);
+				teamID, "finished the team meeting for team " + (teamID + 1));
 		
 		// Work until lunch
 		doWork(lunchTime, true);
@@ -126,7 +126,7 @@ public class TeamLead extends Employee {
 					" Team Lead " + (teamID + 1) + 
 					" answered a question for Developer " + 
 					((Employee) Thread.currentThread()).getID() + 
-					((Employee) Thread.currentThread()).getTeamID() + ".");
+					(((Employee) Thread.currentThread()).getTeamID() + 1) + ".");
 			return;
 		} else { 
 			// Lead cannot answer or is self
@@ -135,7 +135,7 @@ public class TeamLead extends Employee {
 						" Team Lead " + (teamID + 1) + 
 						" and Developer " + 
 						((Employee) Thread.currentThread()).getID() + 
-						((Employee) Thread.currentThread()).getTeamID() + 
+						(((Employee) Thread.currentThread()).getTeamID() + 1) + 
 						" head to the PM's office.");
 			} else {
 				System.out.println("\t" + Firm.getFirmTime().formatTime() + 

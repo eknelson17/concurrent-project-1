@@ -157,7 +157,7 @@ public class Employee extends Thread {
 				askQuestion();
 			} else {
 				try {
-					sleep(10);
+					sleep(5);
 				} catch (InterruptedException e) {
 				}
 			}

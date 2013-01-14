@@ -86,13 +86,10 @@ public class ProjectManager extends Employee {
 	public synchronized void answerQuestion() {
 		try {
 			sleep(100);
-			System.out.println("\t\tProject Manager finished answering " +
-					"question for team " + 
-					((Employee) Thread.currentThread()).getTeamID());
 			System.out.println("\t\t" + Firm.getFirmTime().formatTime() + 
-					" Project Manager finished answering question for team " +
-					((Employee) Thread.currentThread()).getTeamID() + 
-					".");
+				" Project Manager finished answering question for team " +
+				(((Employee) Thread.currentThread()).getTeamID() + 1) + 
+				".");
 		} catch (InterruptedException e) {
 		}
 	}
