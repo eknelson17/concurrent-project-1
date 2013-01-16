@@ -2,93 +2,94 @@ import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
 /**
- * Threaded employee class 
- * Goes to work, goes to meetings, eats lunch, etc.
- * During work can ask questions of the team lead 
  * @author Ian Salitrynski
- *
+ * 
+ *         Threaded employee class. Goes to work, goes to meetings, eats lunch,
+ *         etc. During work can ask questions of the team lead.
  */
 public class Employee extends Thread {
-	
+
 	/**
-	 * Chance of an employee asking a question during work. 
-	 * (0.0-1.0)
-	 * Is incredibly low as this is checked every simulation minute of work
-	 * Recommend level is between 0.00125 and 0.005
+	 * Chance of an employee asking a question during work. (0.0-1.0) Is
+	 * incredibly low as this is checked every simulation minute of work
+	 * Recommend level is between 0.00125 and 0.005.
 	 */
 	protected final double chance = 0.0025;
-	
+
 	/**
-	 * ID in the team.
-	 * 0 is TeamLead
+	 * ID in the team. 0 is TeamLead.
 	 */
 	protected final int ID;
-	
+
 	/**
-	 * ID of team employee belongs to
+	 * ID of team to which the employee belongs.
 	 */
 	protected final int teamID;
-	
+
 	/**
-	 * Time employee starts work in simulation minutes
-	 * 0-30 (8:00 - 8:30)
+	 * Time employee starts work in simulation minutes 0-30 (8:00 - 8:30).
 	 */
 	protected int startTime;
-	
+
 	/**
-	 * Time employee starts to eat lunch in simulation minutes
-	 * 180-270 (11:00 - 12:30)
+	 * Time employee starts to eat lunch in simulation minutes 180-270 (11:00 -
+	 * 12:30).
 	 */
 	protected int lunchTime;
-	
+
 	/**
-	 * Time spent working
+	 * Time spent working.
 	 */
 	protected int timeWorking = 0;
-	
+
 	/**
-	 * Time spent at lunch
+	 * Time spent at lunch.
 	 */
 	protected int timeAtLunch = 0;
 
 	/**
-	 * Time spent in meetings
+	 * Time spent in meetings.
 	 */
 	protected int timeInMeetings = 0;
-	
+
 	/**
-	 * Time spent waiting for the Project Manager
+	 * Time spent waiting for the Project Manager.
 	 */
 	protected int timeWaitingForPm = 0;
-	
+
 	/**
-	 * Random object to get random numbers
+	 * Random object to get random numbers.
 	 */
 	protected final static Random r = new Random();
-	
+
 	/**
 	 * CDL for starting to run.
 	 */
 	protected final CountDownLatch startcdl;
-	
+
 	/**
-	 * CDL for the afternoon meeting
+	 * CDL for the afternoon meeting.
 	 */
 	protected final CountDownLatch afternoonMeeting;
 
 	/**
-	 * CDL for when the meeting is over
+	 * CDL for when the meeting is over.
 	 */
 	protected final CountDownLatch afternoonMeetingOver;
-	
+
 	/**
-	 * Makes a new employee and sets all given fields. 
-	 * @param id number within the team
-	 * @param teamID team the employee is in
-	 * @param startcdl latch to start all functionality
-	 * @param lastMeeting latch for the end of day meeting
+	 * Makes a new employee and sets all given fields.
+	 * 
+	 * @param id
+	 *            number within the team
+	 * @param teamID
+	 *            team the employee is in
+	 * @param startcdl
+	 *            latch to start all functionality
+	 * @param lastMeeting
+	 *            latch for the end of day meeting
 	 */
-	public Employee(int id, int teamID, CountDownLatch startcdl, 
+	public Employee(int id, int teamID, CountDownLatch startcdl,
 			CountDownLatch lastMeeting, CountDownLatch lastMeetingOver) {
 		this.ID = id;
 		this.teamID = teamID;
@@ -96,170 +97,191 @@ public class Employee extends Thread {
 		this.afternoonMeeting = lastMeeting;
 		this.afternoonMeetingOver = lastMeetingOver;
 	}
-	
+
 	/**
-	 * Gets the employee's ID
-	 * Not to be confused with Thread.getId()
+	 * Gets the employee's ID Not to be confused with Thread.getId().
+	 * 
 	 * @return ID specific within a team
 	 */
 	public int getID() {
 		return ID;
 	}
-	
+
 	/**
-	 * Gets the employee's Team ID
+	 * Gets the employee's Team ID.
+	 * 
 	 * @return ID of their team
 	 */
 	public int getTeamID() {
 		return teamID;
 	}
-	
+
 	/**
 	 * @return returns, in minutes, how long this employee spent eating lunch
 	 */
-	public int getTimeAtLunch(){
+	public int getTimeAtLunch() {
 		return timeAtLunch;
 	}
-	
+
 	/**
 	 * @return returns, in minutes, how long this employee spent in meetings
 	 */
-	public int getTimeInMeetings(){
+	public int getTimeInMeetings() {
 		return timeInMeetings;
 	}
-	
+
 	/**
-	 * @return returns, in minutes, how long this employee spent waiting for the PM
+	 * @return returns, in minutes, how long this employee spent waiting for the
+	 *         PM
 	 */
-	public int getTimeWaitingForPm(){
+	public int getTimeWaitingForPm() {
 		return timeWaitingForPm;
 	}
-	
+
 	/**
-	 * @return returns, in minutes, how long this employee spent actually working
+	 * @return returns, in minutes, how long this employee spent actually
+	 *         working
 	 */
-	public int getTimeWorking(){
+	public int getTimeWorking() {
 		return timeWorking;
 	}
-	
-	
+
 	/**
 	 * Runs the employee. Shouldn't be called, use employee.start() instead.
-	 * Employee arrives, goes to team-specific meeting, does work, 
-	 * goes to lunch, does more work, goes to a final meeting, 
-	 * and works a bit more before heading home
+	 * Employee arrives, goes to team-specific meeting, does work, goes to
+	 * lunch, does more work, goes to a final meeting, and works a bit more
+	 * before heading home.
 	 */
 	@Override
-	public void run() {	
+	public void run() {
 		// Employees start from 0-30 minutes in the workday (8:00-8:30)
 		startTime = r.nextInt(30);
-		
+
 		// Employees start lunch from 11:00 - 12:30
 		lunchTime = 180 + r.nextInt(90);
-		
+
 		// Wait until time to arrive for work
 		startDay(startTime);
-		
-		// Start and wait at the team-specific meeting for 15 minutes 
+
+		// Start and wait at the team-specific meeting for 15 minutes
 		// using the team meeting latch
 		busyWait(Main.getLead(teamID).getTeamLatch(), 15);
-		
+
 		// Work until lunch
 		doWork(lunchTime, true);
-		
+
 		// Announce lunchtime and wait for lunch
-		busyWait(new CountDownLatch(1), 30, "started eating lunch", 
+		busyWait(new CountDownLatch(1), 30, "started eating lunch",
 				"finished eating lunch");
-		
+
 		// Work until 4:00
 		doWork(480, true);
-		
+
 		// Wait for the meeting at the end of the day and wait in that meeting
 		finalMeeting();
-		
+
 		// Work until the end of the day
 		doWork(startTime + 510, false);
-		
+
 		// Quit working and go home
 		say("ended work");
 	}
-	
+
 	/**
-	 * Start the day at a random time
-	 * Blocks until that time on the startcdl
-	 * @param startOffset simulation minutes of time to wait for
+	 * Start the day at a random time Blocks until that time on the startcdl.
+	 * 
+	 * @param startOffset
+	 *            simulation minutes of time to wait for
 	 */
 	public synchronized void startDay(int startOffset) {
 		startcdl.countDown();
 		try {
 			startcdl.await();
-		} catch (InterruptedException e) {}
+		} catch (InterruptedException e) {
+		}
 		waitFor(startOffset);
 		say("arrived at work");
 		Thread.yield();
 	}
-	
+
 	/**
-	 * Do some work, could possibly ask a question
-	 * Waits until the nextScheduled event
-	 * @param nextScheduledEvent time of the next thing to do in sim minutes
-	 * @param can questions be asked in this time?
+	 * Do some work, could possibly ask a question Waits until the nextScheduled
+	 * event.
+	 * 
+	 * @param nextScheduledEvent
+	 *            time of the next thing to do in sim minutes
+	 * @param can
+	 *            questions be asked in this time?
 	 */
 	public void doWork(int nextScheduledEvent, boolean asksQuestion) {
 		while (Main.getFirmTime().getTimeElapsed() < nextScheduledEvent) {
-			this.timeWorking++ ; //Time spent working is incremented by 1 minute
-			if (hasQuestion(chance)&& asksQuestion) {
+			this.timeWorking++; // Time spent working is incremented by 1 minute
+			if (hasQuestion(chance) && asksQuestion) {
 				say("would like to ask a question");
 				askQuestion();
 			} else {
 				try {
-					sleep(10);	//Sleeps for 1 minute
-				} catch (InterruptedException e) {}
+					sleep(10); // Sleeps for 1 minute
+				} catch (InterruptedException e) {
+				}
 			}
 		}
 	}
-	
+
 	/**
-	 * Wait on the cdl, announce the message, wait some time, 
-	 * then announce the second message
-	 * Used for lunch/meetings. 
-	 * for example: busyWait(meetinglatch, 15, "starts meeting", "ends meeting")
-	 * @param cdl latch to wait before meeting
-	 * @param time offset waiting for cdl to wait in simulation minutes
-	 * @param message1 to say before waiting (for example "starts eating lunch")
-	 * @param message2 to say after completion of event
+	 * Wait on the cdl, announce the message, wait some time, then announce the
+	 * second message Used for lunch/meetings. For example:
+	 * busyWait(meetinglatch, 15, "starts meeting", "ends meeting").
+	 * 
+	 * @param cdl
+	 *            latch to wait before meeting
+	 * @param time
+	 *            offset waiting for cdl to wait in simulation minutes
+	 * @param message1
+	 *            to say before waiting (for example "starts eating lunch")
+	 * @param message2
+	 *            to say after completion of event
 	 */
-	public synchronized void busyWait(CountDownLatch cdl, int time, 
+	public synchronized void busyWait(CountDownLatch cdl, int time,
 			String message1, String message2) {
 		cdl.countDown();
-		timeAtLunch = timeAtLunch + time ; //Keeps track of total time spent at lunch.
+		timeAtLunch = timeAtLunch + time; // Keeps track of total time spent at
+											// lunch.
 		try {
 			cdl.await();
 			say(message1);
 			waitFor(time);
 			say(message2);
-		} catch (InterruptedException e) {}
+		} catch (InterruptedException e) {
+		}
 	}
-	
+
 	/**
-	 * Wait on the cdl, then wait some time. Does not announce anything
-	 * Used for meetins where announcements are elsewhere 
-	 * (like team meetings announced by the team lead)
-	 * @param cdl latch to wait before meeting
-	 * @param time offset waiting for cdl to wait in simulation minutes
+	 * Wait on the cdl, then wait some time. Does not announce anything Used for
+	 * meetins where announcements are elsewhere (like team meetings announced
+	 * by the team lead).
+	 * 
+	 * @param cdl
+	 *            latch to wait before meeting
+	 * @param time
+	 *            offset waiting for cdl to wait in simulation minutes
 	 */
 	public synchronized void busyWait(CountDownLatch cdl, int time) {
-		timeInMeetings = timeInMeetings + time ; //Total time that will be spent in this meeting.
+		timeInMeetings = timeInMeetings + time; // Total time that will be spent
+												// in this meeting.
 		cdl.countDown();
 		try {
 			cdl.await();
 			waitFor(time);
-		} catch (InterruptedException e) {}
+		} catch (InterruptedException e) {
+		}
 	}
-	
+
 	/**
-	 * Waits for a certain amount of time to pass. 
-	 * @param time offset from current time to wait in simulation minutes
+	 * Waits for a certain amount of time to pass.
+	 * 
+	 * @param time
+	 *            offset from current time to wait in simulation minutes
 	 */
 	protected void waitFor(int time) {
 		long initTime = Main.getFirmTime().getTimeElapsed();
@@ -267,57 +289,65 @@ public class Employee extends Thread {
 			yield();
 		}
 	}
-	
+
 	/**
-	 * Asks a question of the team lead
-	 * locks the employee until the question is answered. 
+	 * Asks a question of the team lead locks the employee until the question is
+	 * answered.
 	 */
 	protected synchronized void askQuestion() {
 		Main.getLead(teamID).answerQuestion();
 	}
-	
+
 	/**
-	 * Finds out if the employee has a question to ask
-	 * @param chance (0.0-1.0) percent chance of question
+	 * Finds out if the employee has a question to ask.
+	 * 
+	 * @param chance
+	 *            (0.0-1.0) percent chance of question
 	 * @return if employee wants to ask
 	 */
 	protected boolean hasQuestion(double c) {
-		return (r.nextDouble() < c);		
+		return (r.nextDouble() < c);
 	}
-	
+
 	/**
-	 * Prints out a statement with information about the Thread stating it
-	 * @param s action to state without spaces on ends ("started eating lunch")
+	 * Prints out a statement with information about the Thread stating it.
+	 * 
+	 * @param s
+	 *            action to state without spaces on ends
+	 *            ("started eating lunch")
 	 */
 	protected void say(String s) {
 		if (ID == 0) {
-			System.out.println(Main.getFirmTime().formatTime() + " Team Lead " 
+			System.out.println(Main.getFirmTime().formatTime() + " Team Lead "
 					+ (teamID + 1) + " " + s + ".");
-		} else if(ID == -1) {
-			System.out.println(Main.getFirmTime().formatTime() + 
-					" Project Manager " + s + ".");
+		} else if (ID == -1) {
+			System.out.println(Main.getFirmTime().formatTime()
+					+ " Project Manager " + s + ".");
 		} else {
-			System.out.println(Main.getFirmTime().formatTime() + " Developer " 
+			System.out.println(Main.getFirmTime().formatTime() + " Developer "
 					+ (ID + 1) + (teamID + 1) + " " + s + ".");
 		}
 	}
-	
+
 	/**
-	 * Waits on the afternoon meeting cdl, then sleeps for the meeting
+	 * Waits on the afternoon meeting cdl, then sleeps for the meeting.
 	 */
 	protected void finalMeeting() {
-		timeInMeetings = timeInMeetings + 15 ; //15 minutes will be spent at this meeting.
+		timeInMeetings = timeInMeetings + 15; // 15 minutes will be spent at
+												// this meeting.
 		afternoonMeeting.countDown();
 		try {
 			afternoonMeeting.await();
 			sleep(150);
-		} catch (InterruptedException e) {}
+		} catch (InterruptedException e) {
+		}
 
 		afternoonMeetingOver.countDown();
 		try {
 			afternoonMeetingOver.await();
 
-		} catch (InterruptedException e) {}
+		} catch (InterruptedException e) {
+		}
 	}
-	
+
 }
