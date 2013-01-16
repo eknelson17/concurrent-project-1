@@ -147,7 +147,7 @@ public class Employee extends Thread {
 			startcdl.await();
 		} catch (InterruptedException e) {}
 		waitFor(startOffset);
-		say("started work");
+		say("arrived at work");
 		Thread.yield();
 	}
 	

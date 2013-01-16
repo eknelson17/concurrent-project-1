@@ -41,7 +41,8 @@ public class ProjectManager extends Employee {
 		
 		// Start and wait at the Team Lead meeting with the PM for 15 minutes 
 		// using the morning meeting latch
-		busyWait(morningMeeting, 15);
+		busyWait(morningMeeting, 15, "started the Team Lead meeting", 
+				"ended the Team Lead meeting");
 		
 		// Work until first exec meeting
 		doWork(120, false);
