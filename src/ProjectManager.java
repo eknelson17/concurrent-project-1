@@ -87,7 +87,7 @@ public class ProjectManager extends Employee {
 	public synchronized void answerQuestion() {
 		try {
 			sleep(100);
-			System.out.println("\t\t" + Firm.getFirmTime().formatTime() + 
+			System.out.println("\t\t" + Main.getFirmTime().formatTime() + 
 				" Project Manager finished answering question for team " +
 				(((Employee) Thread.currentThread()).getTeamID() + 1) + 
 				".");
@@ -112,7 +112,7 @@ public class ProjectManager extends Employee {
 	 */
 	@Override
 	protected void finalMeeting() {
-		synchronized(Firm.getConferenceRoom()) {
+		synchronized(Main.getConferenceRoom()) {
 			afternoonMeeting.countDown();
 			timeInMeetings += 15 ; //The final meeting will be 15 minutes long
 			try {

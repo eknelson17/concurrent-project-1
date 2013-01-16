@@ -1,7 +1,7 @@
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
-public class Firm {
+public class Main {
 	
 	/**
 	 * System constants
@@ -39,7 +39,7 @@ public class Firm {
 	 * The list of teams is represented by a 2d Array. Each array of employees represents
 	 * a single team, and the array of arrays represents all the teams in this firm. 
 	 */
-	private final static Employee[][] teams = Firm.populateTeams(NUMBER_OF_TEAMS, MEMBERS_PER_TEAM);
+	private final static Employee[][] teams = Main.populateTeams(NUMBER_OF_TEAMS, MEMBERS_PER_TEAM);
 	
 	/**
 	 * The timer that each thread will use to keep track of time
@@ -162,8 +162,8 @@ public class Firm {
 			pm.join();
 		} catch (InterruptedException e) {}
 		
-		Firm.getFirmTime().cancel();
-		Firm.printStatistics();
+		Main.getFirmTime().cancel();
+		Main.printStatistics();
 		return;
 	}
 }

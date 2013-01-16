@@ -33,7 +33,7 @@ public class TeamLead extends Employee {
 			CountDownLatch lastMeeting, CountDownLatch lastMeetingOver, CountDownLatch firstMeeting) {
 		super(id, teamID, startcdl, lastMeeting, lastMeetingOver);
 		morningMeeting = firstMeeting;
-		teamMeeting = new CountDownLatch(Firm.MEMBERS_PER_TEAM);
+		teamMeeting = new CountDownLatch(Main.MEMBERS_PER_TEAM);
 	}
 	
 	/**
@@ -103,7 +103,7 @@ public class TeamLead extends Employee {
 	 */
 	public synchronized void meeting(CountDownLatch cdl, int time, String msg1,
 			String msg2) {
-		synchronized(Firm.getConferenceRoom()) {
+		synchronized(Main.getConferenceRoom()) {
 			cdl.countDown();
 			timeInMeetings = timeInMeetings + time ;
 			try {
@@ -123,7 +123,7 @@ public class TeamLead extends Employee {
 	public synchronized void answerQuestion() {
 		if ((r.nextDouble() < 0.5) && Thread.currentThread() != this) { 
 			// Lead can answer the question
-			System.out.println("\t" + Firm.getFirmTime().formatTime() + 
+			System.out.println("\t" + Main.getFirmTime().formatTime() + 
 					" Team Lead " + (teamID + 1) + 
 					" answered a question for Developer " + 
 					((Employee) Thread.currentThread()).getID() + 
@@ -132,24 +132,24 @@ public class TeamLead extends Employee {
 		} else { 
 			// Lead cannot answer or is self
 			if (Thread.currentThread() != this) {
-				System.out.println("\t" + Firm.getFirmTime().formatTime() + 
+				System.out.println("\t" + Main.getFirmTime().formatTime() + 
 						" Team Lead " + (teamID + 1) + 
 						" and Developer " + 
 						((Employee) Thread.currentThread()).getID() + 
 						(((Employee) Thread.currentThread()).getTeamID() + 1) + 
 						" head to the PM's office.");
 			} else {
-				System.out.println("\t" + Firm.getFirmTime().formatTime() + 
+				System.out.println("\t" + Main.getFirmTime().formatTime() + 
 						" Team Lead " + (teamID + 1) + 
 						" heads to the PM's office.");
 			}
-			String t1 = Firm.getFirmTime().formatTime(); //Save time Team Lead + Developer begin waiting for PM 
-			Firm.getProjectManager().answerQuestion();
-			String t2 = Firm.getFirmTime().formatTime(); //Save time after PM has finished answering question. 
+			String t1 = Main.getFirmTime().formatTime(); //Save time Team Lead + Developer begin waiting for PM 
+			Main.getProjectManager().answerQuestion();
+			String t2 = Main.getFirmTime().formatTime(); //Save time after PM has finished answering question. 
 			
 			//The difference between these two times, minus 10 (10 is the minutes it takes to answer a question) is the time spent waiting
 			//Multiply this time by two in order to account for the amount of time that the developer spent waiting.
-			timeWaitingForPm += ((FirmTime.calculateDifference(t1, t2) - 6)*2);
+			timeWaitingForPm += ((FirmTime.calculateDifference(t1, t2) - 10)*2);
 		}
 	}
 }

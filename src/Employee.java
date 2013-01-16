@@ -162,7 +162,7 @@ public class Employee extends Thread {
 		
 		// Start and wait at the team-specific meeting for 15 minutes 
 		// using the team meeting latch
-		busyWait(Firm.getLead(teamID).getTeamLatch(), 15);
+		busyWait(Main.getLead(teamID).getTeamLatch(), 15);
 		
 		// Work until lunch
 		doWork(lunchTime, true);
@@ -206,7 +206,7 @@ public class Employee extends Thread {
 	 * @param can questions be asked in this time?
 	 */
 	public void doWork(int nextScheduledEvent, boolean asksQuestion) {
-		while (Firm.getFirmTime().getTimeElapsed() < nextScheduledEvent) {
+		while (Main.getFirmTime().getTimeElapsed() < nextScheduledEvent) {
 			this.timeWorking++ ; //Time spent working is incremented by 1 minute
 			if (hasQuestion(chance)&& asksQuestion) {
 				say("would like to ask a question");
@@ -262,8 +262,8 @@ public class Employee extends Thread {
 	 * @param time offset from current time to wait in simulation minutes
 	 */
 	protected void waitFor(int time) {
-		long initTime = Firm.getFirmTime().getTimeElapsed();
-		while (Firm.getFirmTime().getTimeElapsed() < initTime + time) {
+		long initTime = Main.getFirmTime().getTimeElapsed();
+		while (Main.getFirmTime().getTimeElapsed() < initTime + time) {
 			yield();
 		}
 	}
@@ -273,7 +273,7 @@ public class Employee extends Thread {
 	 * locks the employee until the question is answered. 
 	 */
 	protected synchronized void askQuestion() {
-		Firm.getLead(teamID).answerQuestion();
+		Main.getLead(teamID).answerQuestion();
 	}
 	
 	/**
@@ -291,13 +291,13 @@ public class Employee extends Thread {
 	 */
 	protected void say(String s) {
 		if (ID == 0) {
-			System.out.println(Firm.getFirmTime().formatTime() + " Team Lead " 
+			System.out.println(Main.getFirmTime().formatTime() + " Team Lead " 
 					+ (teamID + 1) + " " + s + ".");
 		} else if(ID == -1) {
-			System.out.println(Firm.getFirmTime().formatTime() + 
+			System.out.println(Main.getFirmTime().formatTime() + 
 					" Project Manager " + s + ".");
 		} else {
-			System.out.println(Firm.getFirmTime().formatTime() + " Developer " 
+			System.out.println(Main.getFirmTime().formatTime() + " Developer " 
 					+ (ID + 1) + (teamID + 1) + " " + s + ".");
 		}
 	}
