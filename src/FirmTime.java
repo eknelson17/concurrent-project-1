@@ -75,8 +75,8 @@ public class FirmTime {
 		String[] split2 = t2.split("[ :]");
 		int time1=0;
 		int time2=0;
-		try{
-			
+		
+		try{			
 			//If neither of the two arrays have a length of 3, then an incorrect String was passed.
 			if((split1.length!=3) && (split2.length!=3)){
 				throw new IllegalStateException() ;
@@ -85,15 +85,10 @@ public class FirmTime {
 			//If the two times are not both AM or not both PM,
 			//then time2 (Which must be PM) is moved 12 hours ahead if it's not 12 PM. 
 			if(!split1[2].equalsIgnoreCase(split2[2])){
-				//If the second time has been freshly rolled over (the first element is "12")
-				//Then do nothing.
-				if(split2[0].equals("12")){	}
-				else{
 					time2 = 12*60 ;
-				}
 			}
-			time1 += (Integer.parseInt(split1[0])*60) + (Integer.parseInt(split1[1]));	//The hours are converted to minutes and added to the minute
-			time2 += (Integer.parseInt(split2[0])*60) + (Integer.parseInt(split2[1]));
+			time1 += (Integer.parseInt(split1[0])%12*60) + (Integer.parseInt(split1[1]));	//The hours are converted to minutes and added to the minute
+			time2 += (Integer.parseInt(split2[0])%12*60) + (Integer.parseInt(split2[1]));	//If the hour is "12" then it will be converted to essentially "0"
 		}catch(NumberFormatException e){
 			System.out.println(e.getMessage());
 		}catch(IllegalStateException e){
@@ -155,5 +150,10 @@ public class FirmTime {
 		return String.format("%d:%02d %s", time[0], time[1], timeOfDay);
 	}
 
-	public static void main(String[] args){}
+	public static void main(String[] args){
+		String t1 = "12:00 PM";
+		String t2 = "1:00 PM";
+		
+		System.out.println(FirmTime.calculateDifference(t1, t2));
+	}
 }

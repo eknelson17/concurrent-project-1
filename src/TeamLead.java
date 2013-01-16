@@ -149,7 +149,7 @@ public class TeamLead extends Employee {
 			
 			//The difference between these two times, minus 10 (10 is the minutes it takes to answer a question) is the time spent waiting
 			//Multiply this time by two in order to account for the amount of time that the developer spent waiting.
-			timeWaitingForPm += ((FirmTime.calculateDifference(t1, t2) - 10)*2);
+			timeWaitingForPm += ((FirmTime.calculateDifference(t1, t2) - 6)*2);
 		}
 	}
 }
