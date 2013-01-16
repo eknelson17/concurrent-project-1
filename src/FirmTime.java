@@ -114,9 +114,9 @@ public class FirmTime {
 			System.out.println(e.getMessage());
 		} catch (IllegalStateException e) {
 			System.out.println(e.getMessage());
-		} finally {
-			return time2 - time1;
 		}
+		return time2 - time1;
+		
 	}
 
 	/**
