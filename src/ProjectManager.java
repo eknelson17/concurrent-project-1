@@ -46,6 +46,7 @@ public class ProjectManager extends Employee {
 		// using the morning meeting latch
 		busyWait(morningMeeting, 15, "started the Team Lead meeting",
 				"ended the Team Lead meeting");
+		timeInMeetings += 15;
 
 		// Work until first exec meeting
 		doWork(120, false);
@@ -54,6 +55,7 @@ public class ProjectManager extends Employee {
 		busyWait(new CountDownLatch(1), 60,
 				"went to the first executive meeting",
 				"finished the first executive meeting");
+		timeInMeetings += 60;
 
 		// Work until lunch
 		doWork(lunchTime, false);
@@ -61,6 +63,7 @@ public class ProjectManager extends Employee {
 		// Announce lunchtime and wait for extended lunch
 		busyWait(new CountDownLatch(1), 60, "started eating lunch",
 				"finished eating lunch");
+		timeAtLunch += 60;
 
 		// Work until second exec meeting
 		doWork(360, false);
@@ -69,6 +72,7 @@ public class ProjectManager extends Employee {
 		busyWait(new CountDownLatch(1), 60,
 				"went to the second executive meeting",
 				"finished the second executive meeting");
+		timeInMeetings += 60;
 
 		// Work until 4:00
 		doWork(480, false);
@@ -114,6 +118,7 @@ public class ProjectManager extends Employee {
 	/**
 	 * Waits on the afternoon meeting cdl, then sleeps for the meeting Acquires
 	 * the conference room for the meeting first.
+	 * Adds time to statistics
 	 */
 	@Override
 	protected void finalMeeting() {

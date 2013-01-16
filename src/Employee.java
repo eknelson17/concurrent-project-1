@@ -166,6 +166,7 @@ public class Employee extends Thread {
 		// Start and wait at the team-specific meeting for 15 minutes
 		// using the team meeting latch
 		busyWait(Main.getLead(teamID).getTeamLatch(), 15);
+		timeInMeetings += 15;
 
 		// Work until lunch
 		doWork(lunchTime, true);
@@ -173,6 +174,7 @@ public class Employee extends Thread {
 		// Announce lunchtime and wait for lunch
 		busyWait(new CountDownLatch(1), 30, "started eating lunch",
 				"finished eating lunch");
+		timeAtLunch += 30;
 
 		// Work until 4:00
 		doWork(480, true);
@@ -207,6 +209,7 @@ public class Employee extends Thread {
 	/**
 	 * Do some work, could possibly ask a question Waits until the nextScheduled
 	 * event.
+	 * Adds time to statistics
 	 * 
 	 * @param nextScheduledEvent
 	 *            time of the next thing to do in sim minutes
@@ -215,13 +218,13 @@ public class Employee extends Thread {
 	 */
 	public void doWork(int nextScheduledEvent, boolean asksQuestion) {
 		while (Main.getFirmTime().getTimeElapsed() < nextScheduledEvent) {
-			this.timeWorking++; // Time spent working is incremented by 1 minute
 			if (hasQuestion(chance) && asksQuestion) {
 				say("would like to ask a question");
 				askQuestion();
 			} else {
 				try {
 					sleep(10); // Sleeps for 1 minute
+					this.timeWorking++; // Time spent working is incremented by 1 minute
 				} catch (InterruptedException e) {
 				}
 			}
@@ -232,6 +235,7 @@ public class Employee extends Thread {
 	 * Wait on the cdl, announce the message, wait some time, then announce the
 	 * second message Used for lunch/meetings. For example:
 	 * busyWait(meetinglatch, 15, "starts meeting", "ends meeting").
+	 * Doesn't add time to statistics
 	 * 
 	 * @param cdl
 	 *            latch to wait before meeting
@@ -245,8 +249,6 @@ public class Employee extends Thread {
 	public synchronized void busyWait(CountDownLatch cdl, int time,
 			String message1, String message2) {
 		cdl.countDown();
-		timeAtLunch = timeAtLunch + time; // Keeps track of total time spent at
-											// lunch.
 		try {
 			cdl.await();
 			say(message1);
@@ -260,6 +262,7 @@ public class Employee extends Thread {
 	 * Wait on the cdl, then wait some time. Does not announce anything Used for
 	 * meetins where announcements are elsewhere (like team meetings announced
 	 * by the team lead).
+	 * Doesn't add time to statistics
 	 * 
 	 * @param cdl
 	 *            latch to wait before meeting
@@ -267,8 +270,6 @@ public class Employee extends Thread {
 	 *            offset waiting for cdl to wait in simulation minutes
 	 */
 	public synchronized void busyWait(CountDownLatch cdl, int time) {
-		timeInMeetings = timeInMeetings + time; // Total time that will be spent
-												// in this meeting.
 		cdl.countDown();
 		try {
 			cdl.await();
@@ -295,7 +296,9 @@ public class Employee extends Thread {
 	 * answered.
 	 */
 	protected synchronized void askQuestion() {
+		
 		Main.getLead(teamID).answerQuestion();
+
 	}
 
 	/**

@@ -72,6 +72,7 @@ public class TeamLead extends Employee {
 		// Start and wait at the Team Lead meeting with the PM for 15 minutes
 		// using the morning meeting latch
 		busyWait(morningMeeting, 15);
+		timeInMeetings += 15;
 
 		// Start and wait at the team-specific meeting for 15 minutes
 		// using the team meeting latch, after getting the conference room
@@ -85,6 +86,7 @@ public class TeamLead extends Employee {
 		// Announce lunchtime and wait for lunch
 		busyWait(new CountDownLatch(1), 30, "started eating lunch",
 				"finished eating lunch");
+		timeAtLunch += 30;
 
 		// Work until 4:00
 		doWork(480, true);
@@ -102,6 +104,7 @@ public class TeamLead extends Employee {
 	/**
 	 * Acquire the conference room, wait on the cdl, then wait that time. Used
 	 * for meetings.
+	 * Adds time to statistics
 	 * 
 	 * @param cdl
 	 *            latch to wait on
@@ -131,10 +134,16 @@ public class TeamLead extends Employee {
 	 * Answers a question for an employee. If the employee is this Team Lead or
 	 * by chance the question cannot be answered, the employee(s) head to the
 	 * PM's office where they might wait.
+	 * Adds time to statistics
 	 */
 	public synchronized void answerQuestion() {
+		boolean askPM = false;
+		boolean withDeveloper = false;
+		
 		if ((r.nextDouble() < 0.5) && Thread.currentThread() != this) {
 			// Lead can answer the question
+			withDeveloper = true;
+			
 			System.out.println("\t" + Main.getFirmTime().formatTime()
 					+ " Team Lead " + (teamID + 1)
 					+ " answered a question for Developer "
@@ -145,17 +154,22 @@ public class TeamLead extends Employee {
 		} else {
 			// Lead cannot answer or is self
 			if (Thread.currentThread() != this) {
+				withDeveloper = true;
+				askPM = true;
+				
 				System.out.println("\t" + Main.getFirmTime().formatTime()
 						+ " Team Lead " + (teamID + 1) + " and Developer "
 						+ ((Employee) Thread.currentThread()).getID()
 						+ (((Employee) Thread.currentThread()).getTeamID() + 1)
 						+ " head to the PM's office.");
 			} else {
+				askPM = true;
+				
 				System.out.println("\t" + Main.getFirmTime().formatTime()
 						+ " Team Lead " + (teamID + 1)
 						+ " heads to the PM's office.");
 			}
-			// Save time Team Lead + Developer begin waiting for PM
+			// Save time Team Lead begins waiting for PM
 			String t1 = Main.getFirmTime().formatTime(); 
 			Main.getProjectManager().answerQuestion();
 			
@@ -164,9 +178,12 @@ public class TeamLead extends Employee {
 
 			// The difference between these two times, minus 10 (10 is the
 			// minutes it takes to answer a question) is the time spent waiting
-			// Multiply this time by two in order to account for the amount of
-			// time that the developer spent waiting.
-			timeWaitingForPm += ((FirmTime.calculateDifference(t1, t2) - 10) * 2);
+			if (askPM && withDeveloper) { // Me and dev waiting, so double time
+				timeWaitingForPm += ((FirmTime.calculateDifference(t1, t2) - 10) * 2);
+			} else if (askPM) {	// Just me waiting
+				timeWaitingForPm += ((FirmTime.calculateDifference(t1, t2) - 10));
+			}
+			// If I don't ask the PM, no time added. 
 		}
 	}
 }

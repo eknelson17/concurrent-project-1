@@ -200,12 +200,12 @@ public class Main {
 		totalWorkTime += pm.getTimeWorking();
 
 		System.out
-				.println("Total time spent in meetings = " + totalMeetingTime);
-		System.out.println("Total time spent eating lunch = " + totalLunchTime);
+				.println("Total time spent in meetings: " + totalMeetingTime);
+		System.out.println("Total time spent eating lunch: " + totalLunchTime);
 		System.out
-				.println("Total time spent waiting to get questions answered = "
+				.println("Total time spent waiting to get questions answered: "
 						+ totalWaitTime);
-		System.out.println("Total time spent actually working = "
+		System.out.println("Total time spent actually working: "
 				+ totalWorkTime);
 	}
 
