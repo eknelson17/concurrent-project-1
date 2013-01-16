@@ -105,6 +105,7 @@ public class TeamLead extends Employee {
 			String msg2) {
 		synchronized(Firm.getConferenceRoom()) {
 			cdl.countDown();
+			timeInMeetings = timeInMeetings + time ;
 			try {
 				cdl.await();
 				say(msg1);
@@ -142,7 +143,13 @@ public class TeamLead extends Employee {
 						" Team Lead " + (teamID + 1) + 
 						" heads to the PM's office.");
 			}
+			String t1 = Firm.getFirmTime().formatTime(); //Save time Team Lead + Developer begin waiting for PM 
 			Firm.getProjectManager().answerQuestion();
+			String t2 = Firm.getFirmTime().formatTime(); //Save time after PM has finished answering question. 
+			
+			//The difference between these two times, minus 10 (10 is the minutes it takes to answer a question) is the time spent waiting
+			//Multiply this time by two in order to account for the amount of time that the developer spent waiting.
+			timeWaitingForPm += ((FirmTime.calculateDifference(t1, t2) - 10)*2);
 		}
 	}
 }

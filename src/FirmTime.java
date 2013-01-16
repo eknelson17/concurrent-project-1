@@ -61,7 +61,48 @@ public class FirmTime {
 	public void cancel() {
 		timer.cancel();
 	}
-
+	
+	/**
+	 * Calculates the difference between two times. 
+	 * The two times must both formatted as if they were printed by an object from this class.
+	 * Final result will be t2-t1, returned as integer minutes.
+	 * @param t1 formatted initial string time
+	 * @parm t2 formatted final string time
+	 * @return t2-t1 in minutes
+	 */
+	public static int calculateDifference(String t1, String t2){
+		String[] split1 = t1.split("[ :]"); //HH:MM AM/PM is split into 3 strings. 
+		String[] split2 = t2.split("[ :]");
+		int time1=0;
+		int time2=0;
+		try{
+			
+			//If neither of the two arrays have a length of 3, then an incorrect String was passed.
+			if((split1.length!=3) && (split2.length!=3)){
+				throw new IllegalStateException() ;
+			}
+			
+			//If the two times are not both AM or not both PM,
+			//then time2 (Which must be PM) is moved 12 hours ahead if it's not 12 PM. 
+			if(!split1[2].equalsIgnoreCase(split2[2])){
+				//If the second time has been freshly rolled over (the first element is "12")
+				//Then do nothing.
+				if(split2[0].equals("12")){	}
+				else{
+					time2 = 12*60 ;
+				}
+			}
+			time1 += (Integer.parseInt(split1[0])*60) + (Integer.parseInt(split1[1]));	//The hours are converted to minutes and added to the minute
+			time2 += (Integer.parseInt(split2[0])*60) + (Integer.parseInt(split2[1]));
+		}catch(NumberFormatException e){
+			System.out.println(e.getMessage());
+		}catch(IllegalStateException e){
+			System.out.println(e.getMessage());
+		}
+		finally{
+			return time2-time1;
+		}
+	}
 	/**
 	 * Checks whether the number of minutes elapsed is equivalent to end of day
 	 * 
@@ -114,4 +155,5 @@ public class FirmTime {
 		return String.format("%d:%02d %s", time[0], time[1], timeOfDay);
 	}
 
+	public static void main(String[] args){}
 }

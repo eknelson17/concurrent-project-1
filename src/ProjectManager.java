@@ -91,8 +91,7 @@ public class ProjectManager extends Employee {
 				" Project Manager finished answering question for team " +
 				(((Employee) Thread.currentThread()).getTeamID() + 1) + 
 				".");
-		} catch (InterruptedException e) {
-		}
+		} catch (InterruptedException e) {}
 	}
 	
 	/**
@@ -115,6 +114,7 @@ public class ProjectManager extends Employee {
 	protected void finalMeeting() {
 		synchronized(Firm.getConferenceRoom()) {
 			afternoonMeeting.countDown();
+			timeInMeetings += 15 ; //The final meeting will be 15 minutes long
 			try {
 				afternoonMeeting.await();
 				say("gathers all employees for the final meeting in the " +

@@ -119,6 +119,33 @@ public class Firm {
 	public static Random getRandom(){
 		return r ;
 	}
+	/**
+	 * Prints the final statistics across ALL employees (PM included)
+	 */
+	public static void printStatistics(){
+		int totalMeetingTime = 0;
+		int totalLunchTime = 0;
+		int totalWaitTime = 0;
+		int totalWorkTime = 0;
+		
+		for(int i = 0 ; i <  NUMBER_OF_TEAMS ; i++){
+			for(int j = 0 ; j < MEMBERS_PER_TEAM ; j++){
+					totalMeetingTime += teams[i][j].getTimeInMeetings();
+					totalLunchTime += teams[i][j].getTimeAtLunch();
+					totalWaitTime += teams[i][j].getTimeWaitingForPm();
+					totalWorkTime += teams[i][j].getTimeWorking();
+			}
+		}
+		totalMeetingTime += pm.getTimeInMeetings();
+		totalLunchTime += pm.getTimeAtLunch();
+		totalWaitTime += pm.getTimeWaitingForPm();	
+		totalWorkTime += pm.getTimeWorking() ;
+		
+		System.out.println("Total time spent in meetings = " + totalMeetingTime);
+		System.out.println("Total time spent eating lunch= " + totalLunchTime);
+		System.out.println("Total time spent Waiting to get questions Answered = " + totalWaitTime);
+		System.out.println("Total time spent actually working = " + totalWorkTime);
+	}
 	
 	public static void main(String[] args){
 		pm.start();
@@ -128,16 +155,15 @@ public class Firm {
 			for(int j = 0 ; j < MEMBERS_PER_TEAM ; j++){
 				try {
 					teams[i][j].join();
-				} catch (InterruptedException e) {
-				}
+				} catch (InterruptedException e) {}
 			}
 		}
 		try {
 			pm.join();
-		} catch (InterruptedException e) {
-		}
+		} catch (InterruptedException e) {}
 		
 		Firm.getFirmTime().cancel();
+		Firm.printStatistics();
 		return;
 	}
 }

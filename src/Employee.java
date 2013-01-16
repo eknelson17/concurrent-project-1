@@ -42,6 +42,26 @@ public class Employee extends Thread {
 	protected int lunchTime;
 	
 	/**
+	 * Time spent working
+	 */
+	protected int timeWorking = 0;
+	
+	/**
+	 * Time spent at lunch
+	 */
+	protected int timeAtLunch = 0;
+
+	/**
+	 * Time spent in meetings
+	 */
+	protected int timeInMeetings = 0;
+	
+	/**
+	 * Time spent waiting for the Project Manager
+	 */
+	protected int timeWaitingForPm = 0;
+	
+	/**
 	 * Random object to get random numbers
 	 */
 	protected final static Random r = new Random();
@@ -92,6 +112,34 @@ public class Employee extends Thread {
 	 */
 	public int getTeamID() {
 		return teamID;
+	}
+	
+	/**
+	 * @return returns, in minutes, how long this employee spent eating lunch
+	 */
+	public int getTimeAtLunch(){
+		return timeAtLunch;
+	}
+	
+	/**
+	 * @return returns, in minutes, how long this employee spent in meetings
+	 */
+	public int getTimeInMeetings(){
+		return timeInMeetings;
+	}
+	
+	/**
+	 * @return returns, in minutes, how long this employee spent waiting for the PM
+	 */
+	public int getTimeWaitingForPm(){
+		return timeWaitingForPm;
+	}
+	
+	/**
+	 * @return returns, in minutes, how long this employee spent actually working
+	 */
+	public int getTimeWorking(){
+		return timeWorking;
 	}
 	
 	
@@ -159,14 +207,14 @@ public class Employee extends Thread {
 	 */
 	public void doWork(int nextScheduledEvent, boolean asksQuestion) {
 		while (Firm.getFirmTime().getTimeElapsed() < nextScheduledEvent) {
+			this.timeWorking++ ; //Time spent working is incremented by 1 minute
 			if (hasQuestion(chance)&& asksQuestion) {
 				say("would like to ask a question");
 				askQuestion();
 			} else {
 				try {
-					sleep(5);
-				} catch (InterruptedException e) {
-				}
+					sleep(10);	//Sleeps for 1 minute
+				} catch (InterruptedException e) {}
 			}
 		}
 	}
@@ -184,6 +232,7 @@ public class Employee extends Thread {
 	public synchronized void busyWait(CountDownLatch cdl, int time, 
 			String message1, String message2) {
 		cdl.countDown();
+		timeAtLunch = timeAtLunch + time ; //Keeps track of total time spent at lunch.
 		try {
 			cdl.await();
 			say(message1);
@@ -200,6 +249,7 @@ public class Employee extends Thread {
 	 * @param time offset waiting for cdl to wait in simulation minutes
 	 */
 	public synchronized void busyWait(CountDownLatch cdl, int time) {
+		timeInMeetings = timeInMeetings + time ; //Total time that will be spent in this meeting.
 		cdl.countDown();
 		try {
 			cdl.await();
@@ -256,12 +306,12 @@ public class Employee extends Thread {
 	 * Waits on the afternoon meeting cdl, then sleeps for the meeting
 	 */
 	protected void finalMeeting() {
+		timeInMeetings = timeInMeetings + 15 ; //15 minutes will be spent at this meeting.
 		afternoonMeeting.countDown();
 		try {
 			afternoonMeeting.await();
 			sleep(150);
-		} catch (InterruptedException e) {
-		}
+		} catch (InterruptedException e) {}
 
 		afternoonMeetingOver.countDown();
 		try {
