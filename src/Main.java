@@ -201,9 +201,9 @@ public class Main {
 
 		System.out
 				.println("Total time spent in meetings = " + totalMeetingTime);
-		System.out.println("Total time spent eating lunch= " + totalLunchTime);
+		System.out.println("Total time spent eating lunch = " + totalLunchTime);
 		System.out
-				.println("Total time spent Waiting to get questions Answered = "
+				.println("Total time spent waiting to get questions answered = "
 						+ totalWaitTime);
 		System.out.println("Total time spent actually working = "
 				+ totalWorkTime);
